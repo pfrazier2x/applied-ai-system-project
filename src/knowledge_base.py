@@ -55,6 +55,22 @@ def _stem(word: str) -> str:
     return word
 
 
+# Everyday words -> the vocabulary the knowledge notes use.
+# Added after evaluation case 5 ("fall asleep") failed to retrieve 'ambient'.
+QUERY_EXPANSIONS = {
+    "asleep": "sleep", "bedtime": "sleep", "nap": "sleep",
+    "gym": "workout", "lifting": "workout", "exercise": "workout",
+    "drive": "drives", "driving": "drives", "read": "reading",
+    "chilling": "chill", "beach": "beach", "dinner": "dinner",
+}
+
+
+def expand_query(query: str) -> str:
+    """Append canonical words for any everyday synonyms in the query."""
+    extra = [QUERY_EXPANSIONS[w] for w in tokenize(query) if w in QUERY_EXPANSIONS]
+    return query + (" " + " ".join(extra) if extra else "")
+
+
 class KnowledgeBase:
     """In-memory store of genre and mood notes with keyword retrieval."""
 
@@ -95,7 +111,7 @@ class KnowledgeBase:
         uses sentence is matched, so a word like 'study' points to genres
         people actually study to rather than any genre that mentions it.
         """
-        query_stems = {_stem(w) for w in tokenize(query)}
+        query_stems = {_stem(w) for w in tokenize(expand_query(query))}
         excluded = {e.lower() for e in exclude}
         results = []
         for doc in self.docs:

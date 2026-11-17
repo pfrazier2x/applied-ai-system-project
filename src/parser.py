@@ -47,7 +47,7 @@ MOOD_DEFAULT_ENERGY = {
 }
 
 HIGH_ENERGY_CUES = ["high energy", "high-energy", "energetic", "loud", "fast", "hype", "banger", "pump"]
-LOW_ENERGY_CUES = ["low energy", "low-energy", "quiet", "soft", "slow", "sleep",
+LOW_ENERGY_CUES = ["low energy", "low-energy", "quiet", "soft", "slow", "sleep", "asleep", "bedtime",
                    "nothing too loud", "not too loud", "background", "gentle"]
 
 NEGATION = r"(?:no|not|without|except|nothing|avoid|skip|hate)"
