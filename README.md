@@ -270,5 +270,6 @@ Responsible-AI reflection, limitations, and AI-collaboration notes are in [`mode
 ## Portfolio
 
 - **Code:** https://github.com/pfrazier2x/applied-ai-system-project
+- **Presentation script:** [docs/presentation_script.md](docs/presentation_script.md)
 - **Walkthrough video (optional):** _add Loom link here_
 - **What this project says about me as an AI engineer:** I build AI features that can show their work. I took a simple rule-based recommender and turned it into an agent that retrieves before it answers, checks its own output, and admits when it's unsure. I proved it with tests and an evaluation report, including the case it still gets wrong. I care more about a system being trustworthy and reproducible than about it looking impressive in a demo.

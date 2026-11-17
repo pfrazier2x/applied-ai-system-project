@@ -50,7 +50,7 @@ The stakes are low, since it's a song recommender, but the system could still be
 
 ## 7. Collaboration with AI during this project
 
-I built this with Claude (in Claude Code) as a pair programmer. I chose the base project and goals, ran and read every output, and decided what to keep. Claude drafted most of the module code, the tests and the documentation structure. I reviewed it against the actual run logs.
+I used Claude (in Claude Code) as a pair programmer for this project. I picked which of my three earlier projects to extend. I chose VibeFinder because it already had clean scoring code and tests, and adding retrieval made sense for a recommender. Claude wrote most of the first drafts of the new modules, tests and docs. My job was to steer it, run everything, read the actual output, and decide what stayed. The biggest lesson was that the AI was fast at writing code, but I still had to check the results myself, because it was capable of describing them wrong.
 
 **A suggestion I accepted:** Claude suggested making the self-check *restrict the generator to the retrieved candidate songs* instead of trying to detect bad songs after the fact. I accepted it because it turns "the model might hallucinate a song" into a rule the code enforces, whether the generator is a template or an LLM. The evaluation's injected-fault case (13) shows it working.
 
