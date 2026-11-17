@@ -42,18 +42,25 @@ def test_validate_profile_clamps_energy_and_drops_unknown_genre():
 
 
 def test_self_check_flags_hallucinated_and_duplicate_songs():
-    catalog = {1: {"title": "A", "genre": "pop"}, 2: {"title": "B", "genre": "rock"}}
-    recs = [{"song_id": 99, "reason": "x"}, {"song_id": 1, "reason": "x"},
-            {"song_id": 1, "reason": "x"}]
+    catalog = {1: {"title": "A", "genre": "pop", "mood": "happy"},
+               2: {"title": "B", "genre": "rock", "mood": "intense"}}
+    recs = [{"song_id": 99, "reason": "x"}, {"song_id": 1, "reason": "pop"},
+            {"song_id": 1, "reason": "pop"}]
     result = check_recommendations(recs, catalog, [1, 2], [], k=3)
     assert not result.ok
     joined = " ".join(result.issues)
     assert "hallucinated" in joined and "twice" in joined
 
 
+def test_self_check_flags_ungrounded_reason():
+    catalog = {1: {"title": "A", "genre": "pop", "mood": "happy"}}
+    result = check_recommendations([{"song_id": 1, "reason": "trust me"}], catalog, [1], [], k=1)
+    assert not result.ok and "not grounded" in result.issues[0]
+
+
 def test_self_check_flags_excluded_genre():
-    catalog = {1: {"title": "A", "genre": "pop"}}
-    result = check_recommendations([{"song_id": 1, "reason": "x"}], catalog, [1], ["pop"], k=1)
+    catalog = {1: {"title": "A", "genre": "pop", "mood": "happy"}}
+    result = check_recommendations([{"song_id": 1, "reason": "pop"}], catalog, [1], ["pop"], k=1)
     assert not result.ok and "excluded" in result.issues[0]
 
 

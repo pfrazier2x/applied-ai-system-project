@@ -1,0 +1,29 @@
+$ python -c "<agent with simulated hallucinating generator>"  # see logs/self_check_demo.txt
+Request: "happy edm for a party"
+Understood: genre=edm (stated), mood=happy, energy=0.80  [parser: rules]
+
+  1. Electric Nights - Future Pulse  (score 3.92/4)
+     Why: edm / happy, energy 0.88 (target 0.80); edm is commonly used for parties, running, high-intensity workouts; happy songs are good for celebrating, mornings, boosting mood.
+  2. Fast Lane - Turbo Wave  (score 2.85/4)
+     Why: edm / intense, energy 0.95 (target 0.80); edm is commonly used for parties, running, high-intensity workouts; intense songs are good for workouts, gaming, pushing through hard tasks.
+  3. Sunrise City - Neon Echo  (score 1.98/4)
+     Why: pop / happy, energy 0.82 (target 0.80); pop is commonly used for parties, workouts, road trips; happy songs are good for celebrating, mornings, boosting mood.
+
+Self-check: PASSED (repairs: 1)
+Confidence: 0.76 (high)
+
+Agent trace:
+  - GUARD input accepted
+  - PARSE (rules) genre=edm mood=happy energy=0.80 excluded=[]
+  -   signal: genre 'edm' stated in request
+  -   signal: mood 'happy' matched a keyword
+  -   signal: energy 0.80 defaulted from mood
+  - RETRIEVE 6 candidates [18, 13, 1, 10, 14, 8], 2 knowledge notes
+  - GENERATE using override generator
+  - CHECK failed: song_id 999 does not exist in the catalog (hallucinated)
+  - CHECK failed: song_id 18 explanation is missing or not grounded in its genre/mood
+  - CHECK failed: song_id 18 recommended twice
+  - CHECK failed: song_id 18 explanation is missing or not grounded in its genre/mood
+  - REPAIR #1: rebuilt list from retrieved candidates
+  - CHECK passed
+  - CONFIDENCE 0.76 (high)

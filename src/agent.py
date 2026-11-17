@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from src import llm
-from src.guardrails import (GuardrailError, check_recommendations,
+from src.guardrails import (GuardrailError, check_recommendations, is_grounded,
                             validate_input, validate_profile)
 from src.knowledge_base import KnowledgeBase
 from src.parser import ParsedRequest, parse_request
@@ -194,7 +194,8 @@ class VibeFinderAgent:
             valid, used = [], set()
             for p in picks:
                 sid = p.get("song_id")
-                if (sid in candidate_ids and sid not in used and str(p.get("reason", "")).strip()
+                if (sid in candidate_ids and sid not in used
+                        and is_grounded(p.get("reason", ""), self.catalog[sid])
                         and self.catalog[sid]["genre"] not in profile.excluded_genres):
                     valid.append(p)
                     used.add(sid)

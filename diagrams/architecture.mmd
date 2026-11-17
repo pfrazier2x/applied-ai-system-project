@@ -1,0 +1,46 @@
+flowchart TD
+    U([User: plain-English request]) --> G1
+
+    subgraph AGENT["VibeFinderAgent.run (src/agent.py)"]
+        G1{"1. GUARD<br/>validate_input<br/>empty / too long / injection?"}
+        P["2. PARSE<br/>Claude (if API key) or<br/>rules + KB lookup (src/parser.py)"]
+        V{"3. VALIDATE<br/>validate_profile<br/>genre or mood understood?"}
+        R["4. RETRIEVE<br/>VibeFinder 1.0 scorer ranks songs<br/>+ genre/mood notes from KB"]
+        GEN["5. GENERATE<br/>pick k songs + reasons<br/>grounded in retrieved notes"]
+        C{"6. SELF-CHECK<br/>check_recommendations<br/>real ids? from candidates?<br/>not excluded? no repeats?"}
+        FIX["REPAIR<br/>drop bad picks, refill<br/>from candidates (max 2x)"]
+        S["7. CONFIDENCE<br/>understanding x match quality"]
+    end
+
+    KB[("data/knowledge/<br/>genres.md, moods.md")]
+    CSV[("data/songs.csv<br/>20 songs")]
+    LLM[["Claude API<br/>(optional, src/llm.py)"]]
+    LOG[("logs/vibefinder.log<br/>agent trace")]
+
+    G1 -- blocked --> OUT1([Safe error message])
+    G1 -- ok --> P
+    P <-. activity to genre .-> KB
+    P <-. optional .-> LLM
+    P --> V
+    V -- no --> OUT2([Ask a clarifying question])
+    V -- yes --> R
+    CSV --> R
+    KB --> R
+    R --> GEN
+    GEN <-. optional .-> LLM
+    GEN --> C
+    C -- fail --> FIX --> C
+    C -- pass --> S
+    S --> OUT3([Ranked songs + reasons + confidence])
+
+    AGENT -.every step.-> LOG
+
+    subgraph TESTING["Human + automated checks"]
+        T1["pytest: 23 unit tests<br/>(tests/)"]
+        T2["scripts/evaluate.py<br/>13 scripted cases -> logs/eval_report.md"]
+        H["Developer reviews eval table,<br/>fixes failures (e.g. query expansion)"]
+    end
+    T1 -.-> AGENT
+    T2 -.-> AGENT
+    T2 --> H
+    H -.updates.-> KB

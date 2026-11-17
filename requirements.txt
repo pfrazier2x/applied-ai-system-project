@@ -1,3 +1,4 @@
-pandas
 pytest
-streamlit
+# Optional: only needed to use Claude for parsing/explanations (set ANTHROPIC_API_KEY)
+anthropic
+pydantic

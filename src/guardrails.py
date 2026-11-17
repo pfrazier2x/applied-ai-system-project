@@ -4,7 +4,8 @@
 - validate_profile: clamps energy and drops genres/moods the catalog lacks.
 - check_recommendations: the agent's self-check. Every recommended song
   must exist in the catalog, must come from the retrieved candidates,
-  must not be a genre the user excluded, and must not repeat.
+  must not be a genre the user excluded, must not repeat, and its
+  explanation must mention the song's real genre or mood (grounding).
 """
 
 import re
@@ -20,6 +21,12 @@ INJECTION_PATTERNS = [
     r"developer mode",
     r"reveal (your|the) (prompt|instructions)",
 ]
+
+
+def is_grounded(reason: str, song: Dict) -> bool:
+    """A reason is grounded if it names the song's real genre or mood."""
+    text = str(reason or "").lower()
+    return bool(text.strip()) and (song["genre"].lower() in text or song["mood"].lower() in text)
 
 
 class GuardrailError(ValueError):
@@ -88,8 +95,9 @@ def check_recommendations(recs: List[Dict], catalog: Dict[int, Dict],
         if song_id in seen:
             issues.append(f"song_id {song_id} recommended twice")
         seen.add(song_id)
-        if not str(rec.get("reason", "")).strip():
-            issues.append(f"song_id {song_id} has no explanation")
+        if not is_grounded(rec.get("reason", ""), catalog[song_id]):
+            issues.append(f"song_id {song_id} explanation is missing or not grounded "
+                          f"in its genre/mood")
     if len(recs) != k:
         issues.append(f"expected {k} recommendations, got {len(recs)}")
     return CheckResult(ok=not issues, issues=issues)
