@@ -5,8 +5,8 @@ Use this for the live presentation and, if you record one, the Loom walkthrough.
 ## Before you start (terminal ready)
 
 ```bash
-cd applied-ai-system-project
-source .venv/bin/activate
+cd ~/"Claude AI/applied-ai-system-project"   # must be inside the project folder
+source .venv/bin/activate                    # prompt now starts with (.venv); "python" works after this
 clear
 ```
 
