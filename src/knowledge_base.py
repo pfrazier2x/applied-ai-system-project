@@ -100,6 +100,13 @@ class KnowledgeBase:
             return None
         return self._by_key.get((kind, name.lower()))
 
+    def vocabulary(self) -> set:
+        """Every word that appears in the notes (protected from typo fixes)."""
+        if not hasattr(self, "_vocab"):
+            self._vocab = {w for d in self.docs for w in re.findall(r"[a-z]+", d.text.lower())}
+            self._vocab |= {_stem(w) for w in self._vocab} | STOPWORDS | set(QUERY_EXPANSIONS)
+        return self._vocab
+
     def names(self, kind: str) -> List[str]:
         return [d.name for d in self.docs if d.kind == kind]
 

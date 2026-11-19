@@ -40,6 +40,37 @@ CANDIDATE_POOL = 6
 
 logger = logging.getLogger("vibefinder")
 
+ENERGY_LIMIT_MARGIN = 0.1     # "low" cue: energy <= target + margin
+ENERGY_FLOOR_MARGIN = 0.15    # "high" cue: energy >= target - margin
+
+
+def apply_energy_limit(songs: List[Dict], profile) -> List[Dict]:
+    """Keep only songs inside the energy limit implied by a strong cue."""
+    mode = getattr(profile, "energy_mode", None)
+    if mode == "low":
+        return [s for s in songs if s["energy"] <= profile.energy + ENERGY_LIMIT_MARGIN]
+    if mode == "high":
+        return [s for s in songs if s["energy"] >= profile.energy - ENERGY_FLOOR_MARGIN]
+    return list(songs)
+
+
+def diversify(ranked: List[Dict], n: int) -> List[Dict]:
+    """Take the best n songs with at most one per artist, keeping score order.
+
+    Falls back to repeat artists only if there aren't enough distinct ones.
+    """
+    picked, seen, leftovers = [], set(), []
+    for song in ranked:
+        if song["artist"] in seen:
+            leftovers.append(song)
+        else:
+            picked.append(song)
+            seen.add(song["artist"])
+    picked = sorted(picked[:n], key=lambda s: s["score"], reverse=True)
+    if len(picked) < n:
+        picked.extend(leftovers[: n - len(picked)])
+    return picked
+
 
 def setup_logging(verbose: bool = False) -> None:
     """Log every run to logs/vibefinder.log; echo to console only if verbose."""
@@ -155,8 +186,22 @@ class VibeFinderAgent:
 
         # 4. RETRIEVE
         pool = [s for s in self.songs if s["genre"] not in profile.excluded_genres]
-        ranked = recommend_songs(profile.as_prefs(), pool, k=max(CANDIDATE_POOL, k * 2))
-        candidates = [{**song, "score": score} for song, score, _ in ranked]
+        # Stretch: a strong energy cue ("fall asleep", "hype") becomes a hard
+        # limit, so a mood match can no longer pull in a song that is too
+        # energetic (the documented failing case 5 in VibeFinder 2.0).
+        limited = apply_energy_limit(pool, profile)
+        if len(limited) >= k:
+            if len(limited) < len(pool):
+                self._step(result, f"RETRIEVE energy limit ({profile.energy_mode}) kept "
+                                   f"{len(limited)}/{len(pool)} songs")
+            pool = limited
+        elif profile.energy_mode:
+            self._step(result, "RETRIEVE energy limit skipped: too few songs would remain")
+        ranked = recommend_songs(profile.as_prefs(), pool, k=len(pool))
+        candidates = diversify([{**song, "score": score} for song, score, _ in ranked],
+                               max(CANDIDATE_POOL, k * 2))
+        if [c["id"] for c in candidates] != [s["id"] for s, _, _ in ranked[:len(candidates)]]:
+            self._step(result, "RETRIEVE re-ranked for variety (max one song per artist)")
         notes = []
         for kind, name in (("genre", profile.genre), ("mood", profile.mood)):
             doc = self.kb.get(kind, name)

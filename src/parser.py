@@ -7,6 +7,7 @@ picks the best one. Every decision is recorded in `signals` so the
 final answer can show its reasoning.
 """
 
+import difflib
 import re
 from dataclasses import dataclass, field
 from typing import List, Optional
@@ -63,6 +64,11 @@ class ParsedRequest:
     mood_source: str = "none"       # "stated" | "none"
     signals: List[str] = field(default_factory=list)
     source: str = "rules"           # "rules" | "claude"
+    # Stretch: "low" / "high" when the user gave a strong energy cue
+    # (sleep, bedtime, hype...). The agent then treats energy as a hard
+    # limit instead of just one of three score terms.
+    energy_mode: Optional[str] = None
+    corrections: List[str] = field(default_factory=list)
 
     def as_prefs(self) -> dict:
         """Shape expected by recommender.score_song."""
@@ -71,6 +77,38 @@ class ParsedRequest:
 
 def _contains(text: str, phrase: str) -> bool:
     return re.search(rf"(?<![a-z]){re.escape(phrase)}(?![a-z])", text) is not None
+
+
+# Single words the fuzzy matcher may correct typos towards.
+_FUZZY_VOCAB = sorted({w for words in list(GENRE_SYNONYMS.values()) + list(MOOD_SYNONYMS.values())
+                       for w in words if " " not in w and len(w) >= 4})
+FUZZY_CUTOFF = 0.8
+
+
+def correct_typos(text: str, protected=frozenset()):
+    """Stretch: fix small typos ("lofy", "jaz z", "chil") before parsing.
+
+    Only words of 4+ letters that are close (difflib ratio >= 0.8) to a known
+    genre/mood keyword are changed, so ordinary words are left alone.
+    Words in `protected` (every word the knowledge base uses, e.g. "reading")
+    are never changed, so a real activity is not "corrected" into a mood.
+    Returns (corrected_text, ["chil -> chill", ...]).
+    """
+    known = set(_FUZZY_VOCAB) | set(protected)
+    fixes = []
+
+    def fix(match):
+        word = match.group(0)
+        if len(word) < 4 or word in known:
+            return word
+        close = difflib.get_close_matches(word, _FUZZY_VOCAB, n=1, cutoff=FUZZY_CUTOFF)
+        if close:
+            fixes.append(f"{word} -> {close[0]}")
+            return close[0]
+        return word
+
+    corrected = re.sub(r"[a-z][a-z\-]*", fix, text)
+    return corrected, fixes
 
 
 def _find_excluded_genres(text: str) -> List[str]:
@@ -85,8 +123,11 @@ def _find_excluded_genres(text: str) -> List[str]:
 
 def parse_request(text: str, kb: KnowledgeBase) -> ParsedRequest:
     """Rule-based + retrieval-assisted parse of a natural-language request."""
-    lowered = text.lower()
     result = ParsedRequest()
+    lowered, fixes = correct_typos(text.lower(), kb.vocabulary())
+    if fixes:
+        result.corrections = fixes
+        result.signals.append("typo correction: " + ", ".join(fixes))
 
     # 1. Genres the user said they do NOT want.
     result.excluded_genres = _find_excluded_genres(lowered)
@@ -128,10 +169,12 @@ def parse_request(text: str, kb: KnowledgeBase) -> ParsedRequest:
         result.signals.append(f"energy {result.energy:.2f} given explicitly")
     elif any(_contains(lowered, c) for c in LOW_ENERGY_CUES):
         result.energy = 0.3
-        result.signals.append("low-energy cue found -> energy 0.30")
+        result.energy_mode = "low"
+        result.signals.append("low-energy cue found -> energy 0.30 (treated as a limit)")
     elif any(_contains(lowered, c) for c in HIGH_ENERGY_CUES):
         result.energy = 0.9
-        result.signals.append("high-energy cue found -> energy 0.90")
+        result.energy_mode = "high"
+        result.signals.append("high-energy cue found -> energy 0.90 (treated as a limit)")
     elif result.mood:
         result.energy = MOOD_DEFAULT_ENERGY[result.mood]
         result.signals.append(f"energy {result.energy:.2f} defaulted from mood")

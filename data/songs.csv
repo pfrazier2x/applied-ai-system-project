@@ -19,3 +19,43 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 18,Electric Nights,Future Pulse,edm,happy,0.88,128,0.92,0.93,0.06
 19,Quiet Moments,Acoustic Soul,folk,relaxed,0.25,68,0.64,0.40,0.95
 20,After Hours,Velvet Sound,r&b,moody,0.55,92,0.42,0.69,0.58
+21,Paper Planes at 2AM,Quiet Static,lofi,focused,0.38,82,0.52,0.57,0.74
+22,Rainy Window,Cassette Garden,lofi,chill,0.33,70,0.58,0.55,0.83
+23,Notebook Margins,Dusty Keys,lofi,relaxed,0.30,74,0.61,0.52,0.80
+24,Neon Heartbeat,Bright Avenue,pop,happy,0.86,122,0.88,0.84,0.12
+25,Turn It Up,Kira Vale,pop,intense,0.90,128,0.74,0.86,0.07
+26,Summer Static,The Daylights,pop,happy,0.78,116,0.86,0.80,0.20
+27,Postcard Skies,Little Comet,indie pop,happy,0.70,120,0.79,0.74,0.40
+28,Bike Ride Home,Paper Kites Club,indie pop,relaxed,0.55,104,0.73,0.66,0.52
+29,Bedroom Fireworks,Lemon Hours,indie pop,moody,0.62,112,0.46,0.68,0.38
+30,Broken Amp,Rust Parade,rock,intense,0.94,160,0.41,0.58,0.06
+31,Highway Static,Gravel Saints,rock,happy,0.80,138,0.70,0.60,0.15
+32,Cold Concrete,Iron Halo,rock,moody,0.72,124,0.30,0.50,0.12
+33,Tidal Drift,Still Harbor,ambient,chill,0.18,55,0.55,0.30,0.95
+34,Low Orbit,Glass Meadow,ambient,focused,0.25,62,0.50,0.35,0.90
+35,Moonlit Field,Hollow Pines,ambient,relaxed,0.15,50,0.60,0.28,0.97
+36,Late Set at Ruby's,The Brass Lantern,jazz,relaxed,0.42,96,0.66,0.58,0.85
+37,Blue Hour Sketch,Marlo Quartet,jazz,chill,0.35,84,0.62,0.50,0.88
+38,Swing Shift,Hattie Cole Trio,jazz,happy,0.60,132,0.82,0.70,0.80
+39,Chrome Skyline,Retro Vector,synthwave,intense,0.85,126,0.55,0.75,0.10
+40,Arcade Sunset,Pixel Coast,synthwave,happy,0.72,118,0.78,0.76,0.18
+41,Rearview Glow,Midnight Vector,synthwave,moody,0.66,104,0.40,0.70,0.20
+42,Corner Store Freestyle,Dre Lowell,hip-hop,happy,0.74,98,0.80,0.83,0.14
+43,Late Bus Home,Sable Kid,hip-hop,moody,0.58,88,0.38,0.72,0.30
+44,Study Session Beat,Mika Rhymes,hip-hop,focused,0.52,90,0.60,0.74,0.32
+45,Slow Burn,Amara Lee,r&b,moody,0.50,78,0.40,0.66,0.48
+46,Sunday Silk,Jonah Grey,r&b,happy,0.62,100,0.82,0.76,0.40
+47,Candlelight,Velvet Rose,r&b,relaxed,0.40,72,0.63,0.62,0.60
+48,Bassline Rush,Kilowatt,edm,intense,0.97,150,0.70,0.90,0.04
+49,Festival Lights,Aurora Drop,edm,happy,0.92,126,0.90,0.92,0.05
+50,Deep Current,Subsonic Bloom,edm,focused,0.78,124,0.55,0.80,0.06
+51,Kitchen Radio,Mabel & The Morning,soul,happy,0.64,104,0.86,0.70,0.58
+52,Porch Light,Ezra Bell,soul,relaxed,0.45,84,0.70,0.60,0.66
+53,Heavy Heart,Delia Moon,soul,moody,0.48,76,0.36,0.55,0.62
+54,Island Morning,Coral Roots,reggae,happy,0.62,92,0.88,0.78,0.42
+55,Shade Tree,Lion Valley,reggae,relaxed,0.45,80,0.78,0.72,0.50
+56,Rebel Drum,Kingston Line,reggae,intense,0.75,100,0.60,0.80,0.30
+57,Campfire Letters,Wren Hollow,folk,chill,0.30,76,0.60,0.42,0.93
+58,River Stones,Ada Fairweather,folk,moody,0.28,70,0.34,0.38,0.94
+59,Morning Porch,Juniper Lane,folk,happy,0.45,96,0.80,0.50,0.90
+60,Field Notes,The Long Grass,folk,focused,0.22,66,0.55,0.36,0.92
