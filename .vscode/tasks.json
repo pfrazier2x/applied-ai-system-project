@@ -1,0 +1,30 @@
+{
+  // Terminal > Run Task…
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Set up (create .venv and install requirements)",
+      "type": "shell",
+      "command": "python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run web app",
+      "type": "shell", "command": ".venv/bin/streamlit run app.py",
+      "isBackground": true, "problemMatcher": []
+    },
+    {
+      "label": "Run narrated demo",
+      "type": "shell", "command": ".venv/bin/python -m scripts.demo", "problemMatcher": []
+    },
+    {
+      "label": "Run tests",
+      "type": "shell", "command": ".venv/bin/python -m pytest -q",
+      "group": { "kind": "test", "isDefault": true }, "problemMatcher": []
+    },
+    {
+      "label": "Run evaluation",
+      "type": "shell", "command": ".venv/bin/python -m scripts.evaluate --offline", "problemMatcher": []
+    }
+  ]
+}

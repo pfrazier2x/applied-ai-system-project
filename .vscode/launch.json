@@ -1,0 +1,63 @@
+{
+  // Run and Debug panel (Cmd+Shift+D): pick a demo from the dropdown, press F5.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🎧 Web app (Streamlit)",
+      "type": "debugpy", "request": "launch", "module": "streamlit",
+      "args": ["run", "app.py"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal", "justMyCode": true
+    },
+    {
+      "name": "🎬 Full narrated demo (all scenes)",
+      "type": "debugpy", "request": "launch", "module": "scripts.demo",
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "1 · Retrieval: rainy night drive",
+      "type": "debugpy", "request": "launch", "module": "scripts.demo", "args": ["--scene", "1"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "2 · Guardrails: gym no pop, injection, off-topic",
+      "type": "debugpy", "request": "launch", "module": "scripts.demo", "args": ["--scene", "2"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "3 · Self-check: broken generator",
+      "type": "debugpy", "request": "launch", "module": "scripts.demo", "args": ["--scene", "3"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "4 · Stretch: energy limit (fall asleep)",
+      "type": "debugpy", "request": "launch", "module": "scripts.demo", "args": ["--scene", "4"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "5 · Stretch: typo fixes",
+      "type": "debugpy", "request": "launch", "module": "scripts.demo", "args": ["--scene", "5"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "6 · Reliability: 13-case evaluation",
+      "type": "debugpy", "request": "launch", "module": "scripts.evaluate", "args": ["--offline"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "🧪 Unit tests (pytest)",
+      "type": "debugpy", "request": "launch", "module": "pytest", "args": ["-v"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "💬 Interactive CLI (type your own requests)",
+      "type": "debugpy", "request": "launch", "module": "src.vibefinder", "args": ["--trace", "--offline"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal"
+    },
+    {
+      "name": "🔍 Step through the agent (breakpoint in run())",
+      "type": "debugpy", "request": "launch", "module": "src.vibefinder",
+      "args": ["sad songs for a rainy night drive", "--trace", "--offline"],
+      "cwd": "${workspaceFolder}", "console": "integratedTerminal", "stopOnEntry": false, "justMyCode": true
+    }
+  ]
+}
